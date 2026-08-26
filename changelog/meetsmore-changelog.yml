@@ -1,0 +1,55 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://api.github.com/repos/meetsmore/nittei/releases and
+  https://registry.npmjs.org/@meetsmore-oss/use-ai-client — read 2026-08-25.
+note: >-
+  Neither product publishes a prose changelog. Nittei tags releases on GitHub but every
+  release body checked is empty and carries no assets; use-ai publishes to npm with no
+  GitHub Releases and no CHANGELOG file. The entries below are therefore version-and-date
+  records only — the "what changed" column does not exist upstream and is not invented here.
+changelogs:
+- api: Nittei Scheduler API
+  scheme: semver
+  current_version: 0.44.0
+  url: https://github.com/meetsmore/nittei/releases
+  format: github-releases
+  has_release_notes: false
+  entries:
+  - version: v0.44.0
+    date: '2026-06-16'
+    breaking: unknown
+    additions: unknown
+    highlights: 'No release notes published.'
+  - version: v0.43.0
+    date: '2026-06-15'
+    breaking: unknown
+    additions: unknown
+    highlights: 'No release notes published. Preceded by seven public betas, 2026-06-12.'
+  - version: v0.43.0-beta7
+    date: '2026-06-12'
+    prerelease: true
+    highlights: 'No release notes published.'
+  - version: v0.43.0-beta6
+    date: '2026-06-12'
+    prerelease: true
+    highlights: 'No release notes published.'
+  - version: v0.43.0-beta5
+    date: '2026-06-12'
+    prerelease: true
+    highlights: 'No release notes published.'
+- api: use-ai Server
+  scheme: semver
+  current_version: 1.17.1
+  url: https://www.npmjs.com/package/@meetsmore-oss/use-ai-client?activeTab=versions
+  format: npm-versions
+  has_release_notes: false
+  entries:
+  - version: 1.17.1
+    date: '2026-08-04'
+    breaking: unknown
+    additions: unknown
+    highlights: >-
+      Latest published version across all four packages
+      (-client, -core, -server, -plugin-workflows), which release in lockstep.
+    scope: 29 versions published since 2026-01-14.

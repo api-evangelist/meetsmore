@@ -1,0 +1,39 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://github.com/meetsmore/use-ai README (fetched 2026-08-25) and the package
+  manifests under packages/ in that repository.
+status: no-server-published
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: searched
+note: >-
+  MeetsMore ships no MCP server for its own data. This is deliberate on our part: use-ai
+  is MCP-adjacent in two directions but is neither a hosted MCP endpoint nor a
+  distributable MCP server package, and recording it as one would credit MeetsMore with an
+  agent surface it does not operate.
+  (1) use-ai-server is an MCP *host* — it presents the browser-side tools a React
+  application declares to the LLM as MCP tools, so the tools belong to whichever
+  application embeds the library, not to MeetsMore.
+  (2) use-ai-server is an MCP *client* — it federates third-party remote MCP endpoints
+  configured through MCP_ENDPOINT_<NAME>_URL environment variables, with per-URL header
+  forwarding via the client's forwardedPropsProvider and picomatch URL patterns.
+  The repository also carries apps/example-nest-mcp-server, a NestJS example MCP server
+  used as a fixture in that federation; it is example code, not a MeetsMore product.
+  No MCP endpoint was found on any MeetsMore host, and the marketplace API
+  (api.meetsmore.com) is a closed AWS API Gateway that returns 403
+  {"message":"Missing Authentication Token"} on every path.
+related:
+  mcp_host: '@meetsmore-oss/use-ai-server'
+  mcp_client_config:
+  - MCP_ENDPOINT_<NAME>_URL
+  - MCP_ENDPOINT_<NAME>_NAMESPACE
+  - MCP_ENDPOINT_<NAME>_TIMEOUT
+  - MCP_ENDPOINT_<NAME>_TOOLS_CACHE_TTL
+  mcp_annotations_honored:
+  - destructiveHint
+tools: []

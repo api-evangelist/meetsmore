@@ -1,0 +1,77 @@
+generated: '2026-08-25'
+method: searched
+source: https://pro.meetsmore.com/guide/pricing
+fetched: '2026-08-25'
+currency: JPY
+note: >-
+  MeetsMore publishes no API pricing, because it sells no API. What it does publish, in
+  detail and in public, is the take-rate it charges the service professionals on its
+  marketplace — so that is what is recorded here. Consumers requesting quotes pay
+  MeetsMore nothing. All percentages are quoted 税込 (tax included) on the source page.
+  Values are transcribed verbatim; nothing is converted or averaged.
+plan_count: 3
+plans:
+- name: 成約課金型 (success/commission model)
+  audience: service professional
+  price: 0
+  billing_period: none
+  registration_fee: 0
+  monthly_fee: 0
+  listing_fee: 0
+  included_quota: null
+  usage_charges:
+  - item: 自動応募 (auto-apply to a matched request)
+    price: 0
+  - item: 手動応募 (manual application, first message exchange)
+    price_from: 165
+    unit: JPY per application
+  - item: 成約手数料 (commission on the contracted job amount)
+    rate_range: '16.5%–38.5% 税込, by service category'
+    examples:
+    - category: ハウスクリーニング・引越し・修理・リフォーム (cleaning, moving, repair, remodelling)
+      rate: '22%'
+    - category: 撮影 (photography)
+      rate: '35%'
+    - category: 士業 (tax accountants, lawyers, licensed professionals)
+      rate: '38.5%'
+    - category: 探偵・調査 (investigation)
+      rate: '27.5%'
+- name: 応募課金型 (application/points model)
+  audience: service professional
+  price: 0
+  billing_period: none
+  registration_fee: 0
+  monthly_fee: 0
+  usage_charges:
+  - item: 応募 (points spent to apply to an introduced job)
+    price_from: 165
+    unit: points per application, varying by request
+  - item: 成約手数料
+    price: 0
+    note: No commission on the contracted amount under this model.
+- name: ハイブリッド型 (hybrid model)
+  audience: service professional
+  price: 0
+  billing_period: none
+  usage_charges:
+  - item: 案件紹介料 (introduction fee, in points)
+    range: '1,650pt – 33,000pt depending on service'
+  - item: 成約手数料
+    rate_range: '8.8%–11%'
+points:
+  exchange_rate: '1 point = 1 JPY'
+  purchased_points_validity: 2 years
+  free_points_validity: 1 year
+limits_attached_to_tier: []
+other_fees:
+- item: 振込手数料 (payout transfer fee)
+  price: 275
+  unit: JPY per transfer
+- item: Stripe Connect fee (when the client pays by card or instalments)
+  rate: '0.22% of the transaction'
+api_pricing:
+  published: false
+  note: >-
+    Neither Nittei nor use-ai is sold. Nittei is MIT-licensed and self-hosted at the
+    integrator's own infrastructure cost; use-ai is BUSL-1.1 source-available with the
+    model-provider spend borne by whoever runs the server.

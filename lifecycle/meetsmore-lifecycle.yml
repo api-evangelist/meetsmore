@@ -1,0 +1,61 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  GitHub releases and tags for meetsmore/nittei, npm registry release history for the
+  @meetsmore-oss/use-ai-* packages, and the READMEs of both repositories. Probed
+  2026-08-25.
+note: >-
+  MeetsMore publishes no versioning policy, no deprecation policy, no SLA and no status
+  page for either product, and none at all for the marketplace. What exists is a release
+  history, so that is what is recorded. No Deprecation or StatusPage pointer is emitted in
+  apis.yml, because neither exists.
+apis:
+- api: Nittei Scheduler API
+  version_scheme: semver
+  current_version: 0.44.0
+  current_version_released: '2026-06-16'
+  pre_1_0: true
+  note: >-
+    The server is pre-1.0 (0.44.0), while the generated OpenAPI document hard-codes
+    info.version "1.0.0". A consumer reading the spec cannot tell which server build it
+    describes.
+  release_channel: https://github.com/meetsmore/nittei/releases
+  prerelease_practice: >-
+    Beta tags are published in the open — v0.43.0-beta1 through -beta7 preceded v0.43.0
+    on 2026-06-15. Releases are cut twice: a v* tag and a matching nittei-* tag.
+  release_notes: >-
+    Empty. Every release body checked (v0.44.0) contains no text and ships no assets, so
+    there is no published account of what changed between versions.
+  deprecation_policy: null
+  sunset_headers: false
+  sla: null
+  status_page: null
+  support_window: null
+  deprecated_operations: []
+  license: MIT
+- api: use-ai Server
+  version_scheme: semver
+  current_version: 1.17.1
+  current_version_released: '2026-08-04'
+  first_release: '2026-01-14'
+  releases_to_date: 29
+  release_channel: https://www.npmjs.com/package/@meetsmore-oss/use-ai-client
+  note: >-
+    All four packages version in lockstep at 1.17.1. The GitHub repository publishes no
+    Releases and no CHANGELOG file, so npm publish dates are the only dated release record.
+  deprecation_policy: null
+  sunset_headers: false
+  sla: null
+  status_page: null
+  license: BUSL-1.1
+  license_note: >-
+    Business Source License 1.1 — source-available, not open source in the OSI sense. A
+    consumer evaluating this as a dependency needs to read the change-date and additional
+    use grant terms in the repository LICENSE.
+  deprecated_operations: []
+marketplace:
+  api: none
+  note: >-
+    The MeetsMore marketplace has no public API, no developer program and no status page.
+    api.meetsmore.com is a closed AWS API Gateway (403 "Missing Authentication Token" on
+    every path probed 2026-08-25), so there is no lifecycle surface to record.

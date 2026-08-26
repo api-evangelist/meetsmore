@@ -1,0 +1,168 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  Derived from https://github.com/meetsmore/nittei — README, crates/api/src/lib.rs
+  (router, middleware stack, utoipa ApiDoc paths), crates/api/src/error.rs,
+  examples/retry-mechanism.md, examples/jwt.md, examples/reminders.md,
+  examples/booking.md — and https://github.com/meetsmore/use-ai README. Fetched 2026-08-25.
+api: Nittei Scheduler API
+auth_style:
+  server_to_server: 'API key in the x-api-key header'
+  browser: 'RS256 JWT plus a nittei-account tenant header'
+  see: authentication/meetsmore-authentication.yml
+base_path: /api/v1
+versioning:
+  style: url-path
+  current: v1
+  note: >-
+    The whole API is nested under /api/v1 (OpenApiRouter::with_openapi(...).nest("/api/v1", ...)).
+    The generated OpenAPI document separately declares info.version "1.0.0", which does not
+    track the server's release version — the server was at 0.44.0 on 2026-06-16. There is
+    no documented policy for what would trigger a v2.
+  releases: lifecycle/meetsmore-lifecycle.yml
+operation_naming:
+  note: >-
+    Most resources expose two parallel operations — an end-user variant and an
+    *_admin_controller variant — e.g. get_calendar_controller / get_calendar_admin_controller,
+    delete_event_controller / delete_event_admin_controller. The admin variant is the
+    API-key path and can address any user in the account; the non-admin variant is the JWT
+    path and is scoped to the token's own user.
+pagination:
+  supported: false
+  note: >-
+    No cursor, offset, page-size or page-token parameter exists. Collections are bounded
+    by a time range (get_events_by_calendars, get_events_for_users_in_time_range), by a
+    metadata key/value filter (…_by_meta), or by a search body (search_events). A caller
+    with a large result set has no published way to page it.
+filtering:
+  metadata_query:
+    params: [key, value]
+    example: 'GET /api/v1/user/meta?key=groupId&value=123'
+  search:
+    operation: search_events_controller
+    note: >-
+      POST body filter (SearchEventsRequestBodyFilter) supporting id, external id,
+      datetime range (DateTimeQuery / DateTimeQueryRange) and recurrence queries, with a
+      sort (CalendarEventSort).
+field_expansion:
+  supported: false
+  note: >-
+    No sparse-fieldset or expand parameter. Related data is fetched with a dedicated
+    operation instead — e.g. get_event_instances to expand a recurring event.
+metadata:
+  supported: true
+  note: >-
+    Free-form JSON `metadata` on Account, User, Calendar, CalendarEvent, Schedule and
+    Service, queryable via the …_by_meta operations. A dedicated Axum metadata_middleware
+    layer handles it.
+request_tracing:
+  header: null
+  note: >-
+    No request-id header is documented. The server runs a tower-http TraceLayer with a
+    custom NitteiTracingSpanBuilder and emits spans to the tracing subscriber, but nothing
+    correlating is returned to the caller.
+sensitive_headers:
+  redacted: [Authorization, x-api-key]
+  note: SetSensitiveHeadersLayer keeps both out of request logs.
+transport:
+  cors: 'CorsLayer::permissive()'
+  compression:
+    response: 'gzip/br for bodies above 10 KB; skipped for gRPC, images and SSE'
+    request: 'RequestDecompressionLayer — compressed request bodies are accepted'
+  panics: 'CatchPanicLayer converts a panic into a response rather than dropping the connection'
+error_envelope:
+  format: text/html
+  rfc9457: false
+  see: errors/meetsmore-problem-types.yml
+rate_limit_signaling:
+  headers: []
+  note: >-
+    None. No X-RateLimit-*, RateLimit-* or Retry-After handling was found, and no limit is
+    documented. See rate-limits/meetsmore-rate-limits.yml.
+idempotency:
+  supported: partial
+  header: null
+  scope: null
+  retention: null
+  note: >-
+    There is no Idempotency-Key mechanism. Safety comes from HTTP method semantics only.
+    examples/retry-mechanism.md is explicit: the JavaScript client's automatic retry is
+    enabled for GET, PUT and DELETE — "idempotent requests" in MeetsMore's own words — and
+    POST is deliberately excluded, so a create that times out must be reconciled by the
+    caller. Retry is exponential backoff: immediate, then 1s, 2s, 4s, capped at maxDelay,
+    maxRetries default 3, on ECONNRESET / ETIMEDOUT / ENOTFOUND / ENETUNREACH / 5xx, never
+    on ECONNABORTED.
+  practical_workaround: >-
+    CalendarEvent and User both accept an application-supplied externalId, and there are
+    read-by-external-id operations, so a caller can detect a duplicate after the fact.
+    This is reconciliation, not idempotency — the second POST still creates a second row.
+dry_run_mode:
+  supported: false
+  note: >-
+    No preview or validate-only mode. The closest published pattern is booking:
+    get_service_bookingslots computes availability without writing anything, so a caller
+    can rehearse a booking decision before creating the CalendarEvent that represents it.
+reversibility:
+  grade: documented
+  note: >-
+    Every write surface has a reversal operation, and none of them has a published window.
+    Nittei is a self-hosted scheduler with no billing, capture or settlement semantics, so
+    there is nothing here that costs money to get wrong — but there is also no stated
+    recovery period, no soft-delete and no restore endpoint, so a delete should be treated
+    as permanent. NO WINDOW IS ASSERTED BELOW BECAUSE MEETSMORE PUBLISHES NONE.
+  surfaces:
+  - write: create_event_controller / create_event_admin_controller
+    reversal: delete_event_controller / delete_event_admin_controller
+    window: null
+    window_source: null
+    note: Hard delete. No restore operation exists.
+  - write: create_batch_events_controller
+    reversal: delete_many_events_admin_controller
+    window: null
+    window_source: null
+    note: Batch create has a matching batch delete, keyed by event ids.
+  - write: update_event_controller / update_event_admin_controller
+    reversal: null
+    window: null
+    note: >-
+      Update is destructive of the previous values — there is no version history, no undo
+      and no changelog on the event. `updated` records only that a change happened.
+  - write: create_calendar_controller
+    reversal: delete_calendar_controller / delete_calendar_admin_controller
+    window: null
+    note: >-
+      Deleting a calendar is the highest-blast-radius reversal in this API — its events go
+      with it. Permissions.DeleteCalendar exists as a discrete JWT policy claim precisely
+      so an integrator can withhold it from end users.
+  - write: create_user_controller
+    reversal: delete_user_controller
+    window: null
+  - write: set_account_webhook_controller
+    reversal: delete_account_webhook_controller
+    window: null
+  - write: add_account_integration_controller / oauth_integration_controller
+    reversal: remove_account_integration_controller / remove_integration_controller
+    window: null
+  - write: add_sync_calendar_admin_controller
+    reversal: remove_sync_calendar_admin_controller
+    window: null
+  - write: add_busy_calendar
+    reversal: remove_busy_calendar
+    window: null
+  - write: create_service_controller / add_user_to_service
+    reversal: remove_user_from_service / delete_service
+    window: null
+use_ai_conventions:
+  api: use-ai Server
+  transport: Socket.IO
+  protocol: 'AG-UI (partial)'
+  default_port: 8081
+  destructive_action_approval: >-
+    The client honors the MCP destructiveHint annotation and requires explicit end-user
+    approval before a tool marked destructive executes — the closest thing in either
+    product to a reversibility control, since it prevents the irreversible act rather than
+    undoing it.
+  error_codes:
+    '429': rate limit exceeded (from the upstream model provider)
+    '529': model provider overloaded
+  max_payload: 'MAX_HTTP_BUFFER_SIZE, default 10485760 bytes'

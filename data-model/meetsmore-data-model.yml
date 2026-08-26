@@ -1,0 +1,154 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  Derived from the ts-rs generated DTOs MeetsMore publishes at
+  https://github.com/meetsmore/nittei/tree/master/clients/javascript/lib/gen_types
+  (AccountDTO, UserDTO, CalendarDTO, CalendarEventDTO, ScheduleDTO, ServiceDTO,
+  ServiceResourceDTO, EventInstance, CalendarEventReminder, RRuleOptions) and the route
+  table in crates/api/src/lib.rs. Fetched 2026-08-25. These types are generated from the
+  Rust structs by ts-rs, so they are the same shapes the runtime OpenAPI document
+  describes.
+api: Nittei Scheduler API
+id_scheme:
+  type: UUID
+  note: >-
+    Every primary key is the `ID` alias, documented in each DTO as "UUID of the ...".
+    There are no prefixed, type-discriminating ids. Several entities additionally carry an
+    `externalId` so the integrating application can address its own identifiers, and
+    CalendarEvent adds `externalParentId`; there is a dedicated read operation
+    get_event_by_external_id_admin_controller and get_user_by_external_id_controller.
+metadata_pattern: >-
+  Account, User, Calendar, CalendarEvent, Schedule and Service all carry a free-form
+  `metadata` JSON object, and the API exposes metadata as a first-class query axis
+  (get_calendars_by_meta, get_events_by_meta, GetUsersByMetaAPIResponse,
+  GetServicesByMetaAPIResponse). Nittei's own docs advise storing booking records in the
+  integrating application and using Nittei only to compute slots.
+entities:
+- name: Account
+  description: Multi-tenancy boundary. Holds the webhook settings and the RSA public JWT key.
+  key_fields: [id, publicJwtKey, settings]
+  relationships:
+  - has_many: User
+    via: accountId (implicit — a User belongs to exactly one Account)
+  - has_one: AccountWebhookSettings
+    via: settings.webhook
+- name: User
+  description: An end user of the integrating application, mirrored into Nittei.
+  key_fields: [id, externalId, metadata]
+  relationships:
+  - belongs_to: Account
+  - has_many: Calendar
+    via: Calendar.userId
+  - has_many: Schedule
+    via: Schedule.userId
+  - has_many: CalendarEvent
+    via: CalendarEvent.userId
+  - has_many: ServiceResource
+    via: ServiceResource.userId
+- name: Calendar
+  description: Grouping of calendar events owned by one user.
+  key_fields: [id, userId, name, key, settings, metadata]
+  relationships:
+  - belongs_to: User
+    via: userId
+  - has_many: CalendarEvent
+    via: CalendarEvent.calendarId
+  note: >-
+    `key` is documented as unique per user, so it is a natural secondary key.
+    settings carries weekStart and timezone (CalendarSettingsDTO).
+- name: CalendarEvent
+  description: >-
+    The event record. Supports iCalendar RRULE recurrence, exception dates, reminders,
+    busy/free marking and a status.
+  key_fields:
+  - id
+  - calendarId
+  - userId
+  - title
+  - description
+  - eventType
+  - location
+  - allDay
+  - status
+  - externalId
+  - externalParentId
+  - startTime
+  - endTime
+  - duration
+  - busy
+  - created
+  - updated
+  - recurrence
+  - recurringUntil
+  - exdates
+  - recurringEventId
+  - originalStartTime
+  - reminders
+  - metadata
+  relationships:
+  - belongs_to: Calendar
+    via: calendarId
+  - belongs_to: User
+    via: userId
+  - belongs_to: CalendarEvent
+    via: recurringEventId
+    note: Self-reference — an exception instance points back at its recurring parent.
+  - has_many: CalendarEventReminder
+    via: reminders
+  - has_one: RRuleOptions
+    via: recurrence
+  - has_many: EventInstance
+    via: expansion (get_event_instances) — instances are computed, not stored
+- name: EventInstance
+  description: A materialised occurrence of a recurring CalendarEvent, produced by expansion.
+  relationships:
+  - belongs_to: CalendarEvent
+- name: CalendarEventReminder
+  description: >-
+    A relative reminder on an event. `delta` is minutes before the occurrence and
+    `identifier` is an application-supplied string echoed back on the webhook.
+  key_fields: [delta, identifier]
+  relationships:
+  - belongs_to: CalendarEvent
+- name: Schedule
+  description: Availability ruleset for a user, evaluated in a named IANA timezone.
+  key_fields: [id, userId, rules, timezone, metadata]
+  relationships:
+  - belongs_to: User
+    via: userId
+  - has_many: ScheduleRule
+    via: rules
+- name: Service
+  description: A bookable service. Users are registered onto it to become bookable.
+  key_fields: [id, metadata]
+  relationships:
+  - has_many: ServiceResource
+    via: ServiceResource.serviceId
+  - has_many: ServiceBookingSlot
+    via: computed (get_service_bookingslots)
+- name: ServiceResource
+  description: >-
+    The join between a User and a Service — this user's configuration on this service:
+    availability (own schedule vs service schedule), buffers and booking windows.
+  key_fields: [userId, serviceId, availability]
+  relationships:
+  - belongs_to: User
+    via: userId
+  - belongs_to: Service
+    via: serviceId
+  - has_one: Schedule
+    via: availability (TimePlan variant "Schedule")
+  - has_many: Calendar
+    via: busy calendars added with add_busy_calendar (BusyCalendarProvider Nittei/Google/Outlook)
+- name: ServiceBookingSlot
+  description: A computed free slot for a service on a date. Not persisted.
+  relationships:
+  - belongs_to: Service
+- name: CalendarIntegration
+  description: >-
+    A connected external calendar — Google or Outlook — used either as a source of busy
+    time or as a sync target.
+  key_fields: [provider, accessRole]
+  relationships:
+  - belongs_to: User
+  - belongs_to: Calendar

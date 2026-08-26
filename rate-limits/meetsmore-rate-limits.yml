@@ -1,0 +1,34 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://github.com/meetsmore/nittei (README, crates/api/src/lib.rs middleware stack,
+  crates/api/src/error.rs, examples/retry-mechanism.md) and
+  https://github.com/meetsmore/use-ai (README, environment reference). Searched 2026-08-25.
+limit_count: 0
+note: >-
+  An honest zero. Nittei documents no rate limit and implements none: the Axum middleware
+  stack in crates/api/src/lib.rs is CORS, decompression, compression, sensitive-header
+  redaction, panic catching and tracing — there is no throttling layer, and NitteiError has
+  no 429 variant, so the API cannot return one. That is coherent for a self-hosted server:
+  the limit is whatever the operator's own ingress imposes. Nothing is recorded for the
+  MeetsMore marketplace because it publishes no API at all.
+limits: []
+response_headers:
+  ratelimit_headers: []
+  retry_after: false
+  note: No X-RateLimit-*, RateLimit-* or Retry-After header is emitted or documented.
+exhaustion_status: null
+client_backoff:
+  note: >-
+    The published JavaScript client has a retry policy but it is a *connection-failure*
+    policy, not a rate-limit policy: exponential backoff (immediate, 1s, 2s, 4s, capped),
+    maxRetries default 3, on GET/PUT/DELETE only, triggered by ECONNRESET, ETIMEDOUT,
+    ENOTFOUND, ENETUNREACH and 5xx. 429 is not in the trigger list.
+  source: https://github.com/meetsmore/nittei/blob/master/examples/retry-mechanism.md
+upstream_limits:
+  api: use-ai Server
+  note: >-
+    use-ai surfaces the model provider's limits rather than its own — the client maps
+    HTTP 429 to a rate-limit error code and HTTP 529 to a provider-overloaded error code.
+    These originate at Anthropic/OpenAI, not at MeetsMore. A payload ceiling is
+    configurable via MAX_HTTP_BUFFER_SIZE (default 10485760 bytes).

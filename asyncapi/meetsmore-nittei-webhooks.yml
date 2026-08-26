@@ -1,0 +1,64 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://github.com/meetsmore/nittei/blob/master/examples/reminders.md and the generated
+  types AccountWebhookSettingsDTO / CalendarEventReminder / AccountEventRemindersDTO /
+  AccountRemindersDTO in clients/javascript/lib/gen_types/. Fetched 2026-08-25.
+type: Webhooks
+asyncapi_published: false
+note: >-
+  MeetsMore publishes no AsyncAPI document for either product. Nittei does ship a real,
+  documented outbound webhook, captured below verbatim from the provider's own example.
+  use-ai's event surface is a Socket.IO/AG-UI stream between a browser and its own
+  self-hosted server, not a subscribable provider event feed, so it is not modelled here.
+api: Nittei Scheduler API
+webhooks:
+  registration:
+    operation: set_account_webhook_controller
+    client_method: 'client.account.setWebhook(url)'
+    removal: delete_account_webhook_controller
+    scope: >-
+      One webhook URL per Account. Registering returns account.settings.webhook.key — a
+      server-generated shared secret.
+  verification:
+    method: shared-secret-header
+    header: nittei-scheduler-webhook-key
+    note: >-
+      The receiver compares the request header against the key returned at registration.
+      This is a static shared secret, not an HMAC signature over the body: there is no
+      timestamp, no replay window and no body binding, so a receiver cannot detect a
+      replayed or truncated delivery.
+  delivery:
+    method: POST
+    retries: undocumented
+    ordering: undocumented
+    ip_allowlist: undocumented
+  events:
+  - name: reminders
+    description: >-
+      Fired ahead of a Calendar Event occurrence, at the offset the caller attached to the
+      event. Reminders are the only event Nittei emits — the README states plainly that
+      Nittei will not notify end users by email or phone itself, and that the integrating
+      server owns that.
+    trigger: >-
+      A CalendarEventReminder attached at event creation, with `delta` minutes relative to
+      the occurrence (negative = before; the published example uses -15) and an
+      application-chosen `identifier` echoed back on delivery.
+    payload_shape: |
+      {
+        "reminders": [
+          { "event": CalendarEvent, "identifier": "your_unique_identifier" }
+        ]
+      }
+    batching: >-
+      The payload is an array — due reminders are delivered in batches by the background
+      job, not one request per reminder.
+    background_job: >-
+      Emission depends on the reminder jobs being enabled on the instance
+      (start_send_reminders_job / start_reminder_generation_job, disabled when
+      NITTEI_REMINDERS_JOB_ENABLED is false).
+    related_types:
+    - CalendarEventReminder
+    - AccountEventRemindersDTO
+    - AccountRemindersDTO
+    - AccountWebhookSettingsDTO

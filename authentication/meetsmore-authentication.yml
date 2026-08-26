@@ -1,0 +1,85 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://github.com/meetsmore/nittei — README "Overview", crates/api/src/lib.rs
+  (utoipa SecurityAddon), crates/api/src/error.rs and examples/jwt.md — fetched 2026-08-25.
+  derive-authentication.py was not run: there is no openapi/ document in this repository to
+  derive from, because Nittei's OpenAPI is generated at runtime by a self-hosted instance.
+note: >-
+  The MeetsMore marketplace itself publishes no authentication documentation — its backend
+  (api.meetsmore.com) is a closed AWS API Gateway returning 403 "Missing Authentication
+  Token" to anonymous callers, with no public developer program, key issuance or docs.
+  Everything below describes the Nittei Scheduler API.
+apis:
+- api: Nittei Scheduler API
+  security_schemes:
+  - name: api_key
+    type: apiKey
+    in: header
+    parameter: x-api-key
+    audience: server-to-server
+    description: >-
+      The account's secret API key. Registered in the generated OpenAPI document by
+      utoipa's SecurityAddon as ApiKey::Header("x-api-key"). Used for every admin-scope
+      operation (the *_admin_controller variants). The header name is declared in code as
+      NITTEI_X_API_KEY_HEADER and is added to the Axum SetSensitiveHeadersLayer alongside
+      Authorization so it is redacted from request logs.
+    source: https://github.com/meetsmore/nittei/blob/master/crates/api/src/lib.rs
+  - name: jwt
+    type: http
+    scheme: bearer
+    bearer_format: JWT
+    audience: end-user / browser
+    algorithms:
+    - RS256
+    description: >-
+      For browser-to-server calls. The integrating application uploads its RSA public
+      signing key once via account.setPublicSigningKey (POST set_account_pub_key), then
+      mints a per-user token signed with its private key. RS256 is the only algorithm
+      supported. Claims observed in the published example: nitteiUserId (subject), exp,
+      iat and schedulerPolicy — an allow/reject list drawn from a Permissions enum,
+      e.g. allow [Permissions.All], reject [Permissions.DeleteCalendar].
+    source: https://github.com/meetsmore/nittei/blob/master/examples/jwt.md
+  - name: nittei-account
+    type: apiKey
+    in: header
+    parameter: nittei-account
+    audience: end-user / browser
+    description: >-
+      Tenant selector that accompanies the JWT. The API returns 401 with
+      "Unidentifiable client. Must include the `nittei-account` header" when it is
+      missing (NitteiError::UnidentifiableClient in crates/api/src/error.rs).
+    source: https://github.com/meetsmore/nittei/blob/master/crates/api/src/error.rs
+  authorization_model:
+    tenancy: >-
+      Account is the multi-tenancy boundary; a User belongs to exactly one Account.
+      Admin operations are authenticated by the account API key; end-user operations are
+      scoped to the user identified in the JWT.
+    permissions: >-
+      Per-token allow/reject policy (schedulerPolicy) rather than OAuth scopes. No OAuth
+      scope registry is published, so no scopes/ artifact is emitted for this provider.
+  outbound_oauth:
+    description: >-
+      Nittei acts as an OAuth2 client to connect external calendars. Google and Outlook
+      credentials are exchanged through user::oauth_integration_controller and
+      account::add_account_integration; see IntegrationProvider,
+      OAuthIntegrationRequestBody and OAuthOutlookRequestBody in the generated client types.
+    providers:
+    - Google
+    - Outlook
+- api: use-ai Server
+  security_schemes:
+  - name: none-by-default
+    type: none
+    description: >-
+      use-ai-server ships with no authentication of its own; the README's rationale is
+      that client-side tools "can already" be invoked by the browser application, so the
+      MCP bridge adds no privilege. Authorization for anything the server calls onward is
+      forwarded from the client: forwardedPropsProvider supplies an mcpHeaders map keyed
+      by picomatch URL patterns, and the server attaches the matching headers only when it
+      calls a remote MCP endpoint whose URL matches.
+    source: https://github.com/meetsmore/use-ai#external-mcps
+  provider_credentials:
+    description: >-
+      Model provider keys are server-side environment variables (e.g. ANTHROPIC_API_KEY),
+      never sent from the browser.

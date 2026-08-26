@@ -1,0 +1,96 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://github.com/meetsmore/nittei (README, crates/api/src/lib.rs, crates/api/src/error.rs,
+  examples/jwt.md, examples/reminders.md, examples/retry-mechanism.md, clients/javascript/lib/gen_types/)
+  and https://github.com/meetsmore/use-ai (README), all fetched 2026-08-25.
+note: >-
+  MeetsMore's marketplace is a Japanese consumer/SMB local-services platform with no public
+  API and no published compliance program, so no regulatory-regime conformance is asserted
+  for it. The entries below are all read off the two open-source contracts.
+standards:
+- id: openapi
+  conforms: true
+  version: '3.x'
+  evidence: >-
+    Nittei generates its own OpenAPI document at runtime with utoipa
+    (crates/api/src/lib.rs uses utoipa::OpenApi, utoipa_axum::router::OpenApiRouter and
+    utoipa_swagger_ui::SwaggerUi) and serves it at /api-docs/openapi.json behind a Swagger
+    UI at /swagger-ui. info.title is "Nittei API", info.version "1.0.0". MeetsMore hosts no
+    public instance, so the document cannot be fetched anonymously and is not captured in
+    openapi/ in this repository.
+- id: rfc5545
+  conforms: true
+  evidence: >-
+    DOMAIN STANDARD for the calendar/scheduling market. Nittei models recurrence as
+    iCalendar RRULE — RRuleOptions / RRuleFrequency / RecurrenceQuery in
+    clients/javascript/lib/gen_types/, backed by the rust-rrule crate — and ships an
+    iCalendar export operation at crates/api/src/calendar/export_ical.rs. A consumer that
+    already speaks iCalendar integrates without a bespoke recurrence connector.
+- id: apikey-auth
+  conforms: true
+  evidence: >-
+    utoipa SecurityAddon registers a single securityScheme "api_key" as
+    ApiKey::Header("x-api-key") (crates/api/src/lib.rs). Server-to-server calls send
+    x-api-key; README example: curl -H "x-api-key: $SECRET_API_KEY" http://localhost:5000/api/v1/user.
+- id: rfc7519
+  conforms: true
+  evidence: >-
+    End-user browser access uses JSON Web Tokens. examples/jwt.md documents uploading an
+    RSA public signing key to the account (account.setPublicSigningKey) and signing tokens
+    with RS256 only; the token carries nitteiUserId, exp, iat and a schedulerPolicy
+    allow/reject claim, and is presented alongside a nittei-account header.
+- id: rfc9457
+  conforms: false
+  evidence: >-
+    Not implemented. crates/api/src/error.rs renders every NitteiError as
+    Content-Type text/html; charset=utf-8 with a plain string body — not
+    application/problem+json, and not JSON at all.
+- id: oauth2
+  conforms: partial
+  evidence: >-
+    Nittei is an OAuth2 *client*, not a provider: user::oauth_integration_controller and
+    account::add_account_integration exchange Google and Outlook OAuth credentials so the
+    scheduler can read those calendars (IntegrationProvider, OAuthIntegrationRequestBody,
+    OAuthOutlookRequestBody in gen_types). Nittei itself issues no OAuth tokens and
+    publishes no authorization server metadata.
+- id: ag-ui
+  conforms: partial
+  evidence: >-
+    use-ai's README states it "partially implements the AG-UI protocol" for communication
+    between @meetsmore-oss/use-ai-client and @meetsmore-oss/use-ai-server, and
+    @meetsmore-oss/use-ai-core depends on @ag-ui/core. The README explicitly says not all
+    aspects of the protocol are implemented.
+- id: mcp
+  conforms: partial
+  evidence: >-
+    use-ai-server presents client-declared tools to the model as MCP tools, federates
+    remote MCP endpoints via MCP_ENDPOINT_* configuration, and honors the MCP
+    destructiveHint annotation to gate destructive tools behind explicit user approval.
+    MeetsMore publishes no MCP server of its own — see mcp/meetsmore-mcp.yml.
+- id: json-schema
+  conforms: true
+  evidence: >-
+    use-ai tool definitions are declared in Zod and converted with zod-to-json-schema
+    before being handed to the model (dependency in packages/client and packages/server).
+- id: pagination
+  conforms: false
+  evidence: >-
+    No pagination convention was found in the Nittei API. Collection responses in
+    gen_types (GetCalendarEventsAPIResponse, SearchEventsAPIResponse,
+    GetEventsByCalendarsAPIResponse, GetUsersByMetaAPIResponse …) are flat arrays with no
+    cursor, offset or page-token field; queries are bounded by time range or metadata
+    filter instead.
+- id: idempotency
+  conforms: partial
+  evidence: >-
+    No Idempotency-Key header exists. Idempotency is achieved by HTTP method semantics
+    only: examples/retry-mechanism.md states the JavaScript client auto-retries GET, PUT
+    and DELETE — "idempotent requests" in its own words — with exponential backoff, and
+    deliberately does not retry POST.
+- id: opentelemetry
+  conforms: partial
+  evidence: >-
+    Nittei uses the tracing crate with a custom NitteiTracingSpanBuilder / OnResponse /
+    OnFailure layer stack (crates/api/src/lib.rs); use-ai-server integrates Langfuse for
+    LLM observability. Neither publishes an OTLP endpoint.

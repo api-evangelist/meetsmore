@@ -1,18 +1,105 @@
 aid: meetsmore
 name: MeetsMore
-description: 'MeetsMore is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  MeetsMore Inc. (株式会社ミツモア) operates Japan's largest local-services marketplace,
+  matching consumers and businesses with vetted professionals across 600+ categories —
+  house cleaning, appliance installation, moving, renovation, pest control, photography,
+  tax accountants and administrative scriveners — alongside ProOne, a cloud operations
+  system for short-term construction contractors, and Hatchoo, an enterprise procurement
+  platform built on the same contractor network. Founded February 2017 and headquartered
+  in Ginza, Tokyo, the company reports 77,000+ registered service providers and passed a
+  cumulative five million service requests in 2024. MeetsMore runs no public developer
+  program for the marketplace itself and its production backend (api.meetsmore.com) is a
+  closed AWS API Gateway; its public API surface is instead two first-party open-source
+  products published from its own GitHub organization — Nittei, a self-hosted Rust
+  calendar/scheduler API server with a utoipa-generated OpenAPI document, and use-ai, an
+  AG-UI/MCP React framework distributed as four npm packages.
+image: https://avatars.githubusercontent.com/u/27227297?v=4
 url: https://raw.githubusercontent.com/api-evangelist/meetsmore/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-25'
 modified: '2026-08-25'
 tags:
 - Company
-apis: []
+- Marketplace
+- Local Services
+- Home Services
+- Japan
+- Scheduling
+- Calendar
+- Booking
+- Field Service
+- Open Source
+- Artificial Intelligence
+- Agents
+apis:
+- name: Nittei Scheduler API
+  description: >-
+    Nittei is MeetsMore's self-hosted calendar and scheduler server, written in Rust
+    (Axum + SQLx + PostgreSQL) and published under the MIT licence. It exposes a
+    multi-tenant REST API under /api/v1 covering Accounts, Users, Calendars, Calendar
+    Events (with RRULE recurrence), Schedules, Services (bookable resources and booking
+    slots), Reminders and Status, plus Google Calendar and Outlook Calendar sync. The
+    server generates its own OpenAPI document at runtime with utoipa and serves it at
+    /api-docs/openapi.json behind a Swagger UI at /swagger-ui. Because Nittei is
+    distributed as source, a container image and a Helm chart rather than as a hosted
+    service, the host in baseURL is a deployment variable — MeetsMore publishes no public
+    instance, so the generated OpenAPI document cannot be fetched anonymously.
+  humanURL: https://github.com/meetsmore/nittei
+  baseURL: https://{nittei-host}/api/v1
+  tags:
+  - Scheduling
+  - Calendar
+  - Booking
+  - Open Source
+  - Self-Hosted
+  properties:
+  - type: Documentation
+    url: https://github.com/meetsmore/nittei#readme
+  - type: GettingStarted
+    url: https://github.com/meetsmore/nittei#getting-started
+  - type: SourceCode
+    url: https://github.com/meetsmore/nittei
+  - type: Webhooks
+    url: asyncapi/meetsmore-nittei-webhooks.yml
+  - type: Authentication
+    url: authentication/meetsmore-authentication.yml
+  - type: ErrorCatalog
+    url: errors/meetsmore-problem-types.yml
+  - type: DataModel
+    url: data-model/meetsmore-data-model.yml
+  - type: Conventions
+    url: conventions/meetsmore-conventions.yml
+- name: use-ai Server
+  description: >-
+    use-ai is MeetsMore's open-source (BUSL-1.1) React client and Node/Bun server for
+    letting an LLM drive a web application's own frontend. The server partially implements
+    the AG-UI protocol over Socket.IO, exposes the browser-side tools a React app declares
+    to the model as MCP tools, and can federate additional remote MCP endpoints declared
+    through MCP_ENDPOINT_* environment variables. It ships as four npm packages
+    (@meetsmore-oss/use-ai-client, -core, -server, -plugin-workflows) and a container image
+    at ghcr.io/meetsmore/use-ai-server; the documented default listen port is 8081. Like
+    Nittei it is self-hosted — MeetsMore operates no public instance.
+  humanURL: https://github.com/meetsmore/use-ai
+  baseURL: http://{use-ai-server-host}:8081
+  tags:
+  - Artificial Intelligence
+  - Agents
+  - MCP
+  - AG-UI
+  - Open Source
+  - Self-Hosted
+  properties:
+  - type: Documentation
+    url: https://github.com/meetsmore/use-ai#readme
+  - type: SourceCode
+    url: https://github.com/meetsmore/use-ai
+  - type: MCPServer
+    url: mcp/meetsmore-mcp.yml
+  - type: Components
+    url: components/meetsmore-components.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +107,55 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://meetsmore.com/
+- type: Blog
+  url: https://engineering.meetsmore.com/
+- type: GitHubOrganization
+  url: https://github.com/meetsmore
+- type: Pricing
+  url: https://pro.meetsmore.com/guide/pricing
+- type: SignUp
+  url: https://lp.meetsmore.com/lps/pro
+- type: Support
+  url: https://meetsmore-pro.zendesk.com/hc/ja
+- type: TermsOfService
+  url: https://meetsmore.com/policies/terms
+- type: PrivacyPolicy
+  url: https://meetsmore.com/policies/privacy
+- type: Packages
+  url: packages/meetsmore-packages.yml
+- type: SDKs
+  url: packages/meetsmore-packages.yml
+- type: Components
+  url: components/meetsmore-components.yml
+- type: MCPServer
+  url: mcp/meetsmore-mcp.yml
+- type: LLMsTxt
+  url: llms/meetsmore-llms.txt
+- type: Conformance
+  url: conformance/meetsmore-conformance.yml
+- type: Lifecycle
+  url: lifecycle/meetsmore-lifecycle.yml
+- type: ChangeLog
+  url: changelog/meetsmore-changelog.yml
+- type: Authentication
+  url: authentication/meetsmore-authentication.yml
+- type: Conventions
+  url: conventions/meetsmore-conventions.yml
+- type: ErrorCatalog
+  url: errors/meetsmore-problem-types.yml
+- type: DataModel
+  url: data-model/meetsmore-data-model.yml
+- type: Webhooks
+  url: asyncapi/meetsmore-nittei-webhooks.yml
+- type: Plans
+  url: plans/meetsmore-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/meetsmore-rate-limits.yml
+- type: DomainSecurity
+  url: security/meetsmore-domain-security.yml
+x-enrichment:
+  date: '2026-08-25'
+  status: enriched
+  artifacts_added: 16
+  pass: local-v1

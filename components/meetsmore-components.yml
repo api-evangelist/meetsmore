@@ -1,0 +1,63 @@
+generated: '2026-08-25'
+method: searched
+source: https://github.com/meetsmore/use-ai#readme — fetched 2026-08-25.
+note: >-
+  Client-side UI surface, distinct from the SDKs in packages/. use-ai is a React component
+  and hook library whose purpose is to let a model drive the host application's own
+  interface, so its components are the agent-facing surface rather than a widget set.
+api: use-ai Server
+loader:
+  package: '@meetsmore-oss/use-ai-client'
+  registry: npm
+  version: 1.17.1
+  entrypoints:
+  - '@meetsmore-oss/use-ai-client'
+  - '@meetsmore-oss/use-ai-client/bundled'
+  bundled_note: >-
+    The /bundled entrypoint is self-contained to avoid zod and socket.io version conflicts
+    with the host application.
+  react_support: 'React 16 and above (the repository runs a dedicated React 16 e2e suite).'
+families:
+- name: Providers
+  components:
+  - name: UseAIProvider
+    type: react-provider
+    description: >-
+      Root provider that opens the Socket.IO/AG-UI connection to the use-ai server and
+      holds chat state. Accepts mcpEndpoints for federating remote MCP servers and
+      forwardedPropsProvider for per-endpoint auth header forwarding.
+- name: Hooks
+  components:
+  - name: useAI
+    type: react-hook
+    description: >-
+      Declares a component's tools and its `prompt` state to the model. Tools are defined
+      with Zod schemas and converted to JSON Schema before being exposed to the LLM as MCP
+      tools; results can be returned to the model. Supports multiple instances of the same
+      component type and MultiTool use.
+- name: Chat UI
+  components:
+  - name: Chat surface
+    type: prebuilt-ui
+    description: >-
+      Prebuilt chat interface rendering markdown via react-markdown with remark-gfm,
+      supporting chat history, chat metadata, suggestions, slash commands, status texts,
+      programmatic chat control, and a fully custom UI escape hatch.
+  - name: Destructive tool approval
+    type: prebuilt-ui
+    description: >-
+      Confirmation gate shown before a tool annotated with the MCP destructiveHint
+      executes; the model cannot complete a destructive action without explicit user
+      approval.
+- name: Headless
+  components:
+  - name: Direct AI usage
+    type: headless
+    description: >-
+      Documented path for using the model without rendering the chat UI at all, for
+      applications that want the tool-calling loop but their own surface.
+server_side:
+  package: '@meetsmore-oss/use-ai-server'
+  note: >-
+    Not a UI component, but required for the components above to function — they are a
+    client half. Also available as a container at ghcr.io/meetsmore/use-ai-server.

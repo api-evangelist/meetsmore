@@ -1,0 +1,77 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  Derived from the published error enum at
+  https://github.com/meetsmore/nittei/blob/master/crates/api/src/error.rs (fetched
+  2026-08-25), cross-read against the retry policy in
+  https://github.com/meetsmore/nittei/blob/master/examples/retry-mechanism.md.
+  Not derived from an OpenAPI document — none is captured in this repository, because
+  Nittei's spec is generated at runtime by a self-hosted instance.
+api: Nittei Scheduler API
+format: text
+media_type: text/html; charset=utf-8
+rfc9457: false
+envelope: >-
+  There is no JSON error envelope. NitteiError::error_response() returns the status code,
+  a literal Content-Type of "text/html; charset=utf-8", and the Display string of the
+  variant as the raw body. Clients must key on the HTTP status code, not on a parsed body.
+note: >-
+  This is a real interoperability gap worth stating plainly: an agent or SDK cannot
+  machine-read a Nittei error. There is no type URI, no code field, and no structured
+  detail — only a human sentence served as text/html.
+problem_types:
+- id: InternalError
+  status: 500
+  title: Internal server error
+  message: Internal server error
+  detail_template: null
+  remediation: >-
+    Retryable. The JavaScript client retries 5xx automatically on GET/PUT/DELETE with
+    exponential backoff (1s, 2s, 4s, capped at maxDelay, default maxRetries 3).
+- id: BadClientData
+  status: 400
+  title: Invalid data provided
+  message: 'Invalid data provided: Error message: `{0}`'
+  remediation: >-
+    Request body or query failed deserialization/validation (validator + axum-valid).
+    Correct the payload; not retryable.
+- id: Conflict
+  status: 409
+  title: Conflict with the request
+  message: 'There was a conflict with the request. Error message: `{0}`'
+  remediation: >-
+    The requested state change conflicts with existing data — e.g. a duplicate external
+    id or a booking slot already taken. Re-read the resource and reconcile; not retryable.
+- id: Unauthorized
+  status: 401
+  title: Unauthorized request
+  message: 'Unauthorized request. Error message: `{0}`'
+  remediation: >-
+    Missing or invalid x-api-key, or a JWT that failed RS256 verification, expired, or
+    whose schedulerPolicy rejects the operation. Not retryable without new credentials.
+- id: UnidentifiableClient
+  status: 401
+  title: Unidentifiable client
+  message: 'Unidentifiable client. Must include the `nittei-account` header. Error message: `{0}`'
+  remediation: >-
+    Add the nittei-account header carrying the account id alongside the end-user JWT.
+    Distinct from Unauthorized: the credential may be valid but the tenant is unstated.
+- id: NotFound
+  status: 404
+  title: Not found
+  message: '404 Not found. Error message: `{0}`'
+  remediation: >-
+    The account, user, calendar, event, schedule or service id does not exist, or is not
+    visible to the authenticated tenant. Not retryable.
+transport_errors:
+  note: >-
+    Connection-level failures the published client treats as retryable, from
+    examples/retry-mechanism.md.
+  retryable:
+  - ECONNRESET
+  - ETIMEDOUT
+  - ENOTFOUND
+  - ENETUNREACH
+  - 5xx
+  not_retryable:
+  - ECONNABORTED

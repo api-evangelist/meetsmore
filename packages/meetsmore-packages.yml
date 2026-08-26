@@ -1,0 +1,103 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  npm registry metadata (registry.npmjs.org), the meetsmore GitHub organization
+  (github.com/meetsmore) and the package manifests in each first-party repository.
+note: >-
+  MeetsMore publishes no client SDK for its marketplace product — the marketplace has no
+  public API. Every package below belongs to one of its two first-party open-source
+  products. crates.io was checked for `nittei` and `nittei_sdk` and neither crate exists;
+  the Rust client is consumed as a path/git dependency from the repository.
+packages:
+- name: '@meetsmore-oss/use-ai-client'
+  registry: npm
+  url: https://www.npmjs.com/package/@meetsmore-oss/use-ai-client
+  official: true
+  language: TypeScript
+  license: BUSL-1.1
+  api: use-ai Server
+  version: 1.17.1
+  published: '2026-08-04'
+  first_published: '2026-01-14'
+  release_count: 29
+  note: React client — useAI hook, UseAIProvider, chat UI, tool definitions with Zod.
+- name: '@meetsmore-oss/use-ai-server'
+  registry: npm
+  url: https://www.npmjs.com/package/@meetsmore-oss/use-ai-server
+  official: true
+  language: TypeScript
+  license: BUSL-1.1
+  api: use-ai Server
+  version: 1.17.1
+  published: '2026-08-04'
+  first_published: '2026-01-14'
+  release_count: 29
+  note: >-
+    Node/Bun server implementing the AG-UI protocol over Socket.IO, bridging client tools
+    to the model as MCP tools and federating remote MCP endpoints.
+- name: '@meetsmore-oss/use-ai-core'
+  registry: npm
+  url: https://www.npmjs.com/package/@meetsmore-oss/use-ai-core
+  official: true
+  language: TypeScript
+  license: BUSL-1.1
+  api: use-ai Server
+  version: 1.17.1
+  published: '2026-08-04'
+  first_published: '2026-01-14'
+  release_count: 29
+  note: Shared types; depends on @ag-ui/core.
+- name: '@meetsmore-oss/use-ai-plugin-workflows'
+  registry: npm
+  url: https://www.npmjs.com/package/@meetsmore-oss/use-ai-plugin-workflows
+  official: true
+  language: TypeScript
+  license: BUSL-1.1
+  api: use-ai Server
+  version: 1.17.1
+  published: '2026-08-04'
+  first_published: '2026-01-14'
+  release_count: 29
+  note: Workflow execution plugin for the use-ai server.
+- name: '@meetsmore/nittei-client'
+  registry: github-packages
+  url: https://github.com/meetsmore/nittei/tree/master/clients/javascript
+  official: true
+  language: TypeScript
+  license: MIT
+  api: Nittei Scheduler API
+  version: null
+  published: null
+  note: >-
+    Checked, nothing to record — the manifest declares
+    publishConfig.registry https://npm.pkg.github.com, so releases go to GitHub Packages,
+    which requires authentication to read version metadata. registry.npmjs.org returns
+    "Not found" for this name. The in-repo manifest carries the placeholder version 0.0.1;
+    the shipped version is set at publish time, so a consumer cannot tell from public data
+    which version is current either.
+- name: nittei (server)
+  registry: cargo-workspace
+  url: https://github.com/meetsmore/nittei
+  official: true
+  language: Rust
+  license: MIT
+  api: Nittei Scheduler API
+  version: 0.44.0
+  published: '2026-06-16'
+  note: >-
+    Not published to crates.io (checked 2026-08-25: crate `nittei` does not exist).
+    Version read from the GitHub release tag v0.44.0 / nittei-0.44.0.
+- name: ghcr.io/meetsmore/use-ai-server
+  registry: cdn
+  url: https://github.com/meetsmore/use-ai/pkgs/container/use-ai-server
+  official: true
+  language: TypeScript
+  license: BUSL-1.1
+  api: use-ai Server
+  version: null
+  published: null
+  note: >-
+    Checked, nothing to record — the README pins the image as `:latest`
+    (`docker run ... ghcr.io/meetsmore/use-ai-server:latest`). The distribution is
+    unpinned, so a consumer cannot tell what they are getting; GHCR exposes no
+    unauthenticated version metadata endpoint for this package.

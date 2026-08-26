@@ -64,5 +64,24 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-MeetsMore is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+MeetsMore Inc. (株式会社ミツモア) operates Japan's largest local-services marketplace,
+matching consumers and businesses with professionals across 600+ categories, alongside ProOne
+(field-service SaaS for short-term construction contractors) and Hatchoo (enterprise procurement).
+Founded February 2017, headquartered in Ginza, Tokyo.
+
+MeetsMore publishes **no public API and no developer program** for the marketplace itself — its
+production backend at `api.meetsmore.com` is a closed AWS API Gateway. Its public API surface is
+two first-party open-source products published from its own GitHub organization:
+
+- **[Nittei](https://github.com/meetsmore/nittei)** — self-hosted Rust calendar/scheduler API
+  server (MIT, v0.44.0). Generates its own OpenAPI document at runtime with utoipa and serves it
+  at `/api-docs/openapi.json`; MeetsMore hosts no public instance, so the document cannot be
+  fetched anonymously.
+- **[use-ai](https://github.com/meetsmore/use-ai)** — AG-UI / MCP React framework (BUSL-1.1,
+  v1.17.1), distributed as four npm packages under `@meetsmore-oss/`.
+
+Links:
+- https://meetsmore.com/
+- https://company.meetsmore.com/
+- https://engineering.meetsmore.com/
+- https://github.com/meetsmore
