@@ -14,6 +14,18 @@ description: >-
   products published from its own GitHub organization — Nittei, a self-hosted Rust
   calendar/scheduler API server with a utoipa-generated OpenAPI document, and use-ai, an
   AG-UI/MCP React framework distributed as four npm packages.
+deliveryModel:
+  model: unknown
+  open_source: unknown
+  commercial: true
+  callable_host: false
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - pricing
+  - repository-unlicensed
+  generated: '2026-08-28'
+  method: derived
 image: https://avatars.githubusercontent.com/u/27227297?v=4
 url: https://raw.githubusercontent.com/api-evangelist/meetsmore/refs/heads/main/apis.yml
 x-type: company
