@@ -43,6 +43,19 @@ tags:
 - Calendar
 - Booking
 - Field Service
+- Open-Source
+- Artificial Intelligence
+- Agents
+tags_raw:
+- Company
+- Marketplace
+- Local Services
+- Home Services
+- Japan
+- Scheduling
+- Calendar
+- Booking
+- Field Service
 - Open Source
 - Artificial Intelligence
 - Agents
@@ -62,6 +75,12 @@ apis:
   humanURL: https://github.com/meetsmore/nittei
   baseURL: https://{nittei-host}/api/v1
   tags:
+  - Scheduling
+  - Calendar
+  - Booking
+  - Open-Source
+  - Self-Hosted
+  tags_raw:
   - Scheduling
   - Calendar
   - Booking
@@ -97,6 +116,13 @@ apis:
   humanURL: https://github.com/meetsmore/use-ai
   baseURL: http://{use-ai-server-host}:8081
   tags:
+  - Artificial Intelligence
+  - Agents
+  - MCP
+  - AG-UI
+  - Open-Source
+  - Self-Hosted
+  tags_raw:
   - Artificial Intelligence
   - Agents
   - MCP
