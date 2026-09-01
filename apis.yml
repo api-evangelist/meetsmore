@@ -144,6 +144,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: License
+  name: MIT
+  url: https://github.com/meetsmore/nittei/blob/master/LICENSE
 - type: Website
   url: https://meetsmore.com/
 - type: Blog
