@@ -26,6 +26,21 @@ deliveryModel:
   - repository-unlicensed
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: free
+  onboarding: open
+  trial: false
+  try_now: true
+  public: true
+  label: Free · Open access
+  confidence: high
+  source:
+  - plans
+  - authentication
+  - rate-limits
+  - security
+  generated: '2026-09-02'
+  method: derived
 image: https://avatars.githubusercontent.com/u/27227297?v=4
 url: https://raw.githubusercontent.com/api-evangelist/meetsmore/refs/heads/main/apis.yml
 x-type: company
