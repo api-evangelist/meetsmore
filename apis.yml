@@ -58,7 +58,7 @@ tags:
 - Calendar
 - Booking
 - Field Service
-- Open-Source
+- Open Source
 - Artificial Intelligence
 - Agents
 tags_raw:
@@ -74,6 +74,7 @@ tags_raw:
 - Open Source
 - Artificial Intelligence
 - Agents
+- Open-Source
 apis:
 - name: Nittei Scheduler API
   description: >-
@@ -93,7 +94,7 @@ apis:
   - Scheduling
   - Calendar
   - Booking
-  - Open-Source
+  - Open Source
   - Self-Hosted
   tags_raw:
   - Scheduling
@@ -101,6 +102,7 @@ apis:
   - Booking
   - Open Source
   - Self-Hosted
+  - Open-Source
   properties:
   - type: Documentation
     url: https://github.com/meetsmore/nittei#readme
@@ -135,7 +137,7 @@ apis:
   - Agents
   - MCP
   - AG-UI
-  - Open-Source
+  - Open Source
   - Self-Hosted
   tags_raw:
   - Artificial Intelligence
@@ -144,6 +146,7 @@ apis:
   - AG-UI
   - Open Source
   - Self-Hosted
+  - Open-Source
   properties:
   - type: Documentation
     url: https://github.com/meetsmore/use-ai#readme
