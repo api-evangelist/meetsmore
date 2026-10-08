@@ -75,3 +75,28 @@ api_pricing:
     Neither Nittei nor use-ai is sold. Nittei is MIT-licensed and self-hosted at the
     integrator's own infrastructure cost; use-ai is BUSL-1.1 source-available with the
     model-provider spend borne by whoever runs the server.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  units: []
+  plans:
+  - name: 成約課金型 (success/commission model)
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: 応募課金型 (application/points model)
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: ハイブリッド型 (hybrid model)
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
