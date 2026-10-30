@@ -64,24 +64,118 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-MeetsMore Inc. (株式会社ミツモア) operates Japan's largest local-services marketplace,
-matching consumers and businesses with professionals across 600+ categories, alongside ProOne
-(field-service SaaS for short-term construction contractors) and Hatchoo (enterprise procurement).
-Founded February 2017, headquartered in Ginza, Tokyo.
+MeetsMore Inc. (株式会社ミツモア) operates Japan's largest local-services marketplace, matching consumers and businesses with vetted professionals across 600+ categories — house cleaning, appliance installation, moving, renovation, pest control, photography, tax accountants and administrative scriveners — alongside ProOne, a cloud operations system for short-term construction contractors, and Hatchoo, an enterprise procurement platform built on the same contractor network. Founded February 2017 and headquartered in Ginza, Tokyo, the company reports 77,000+ registered service providers and passed a cumulative five million service requests in 2024. MeetsMore runs no public developer program for the marketplace itself and its production backend (api.meetsmore.com) is a closed AWS API Gateway; its public API surface is instead two first-party open-source products published from its own GitHub organization — Nittei, a self-hosted Rust calendar/scheduler API server with a utoipa-generated OpenAPI document, and use-ai, an AG-UI/MCP React framework distributed as four npm packages.
 
-MeetsMore publishes **no public API and no developer program** for the marketplace itself — its
-production backend at `api.meetsmore.com` is a closed AWS API Gateway. Its public API surface is
-two first-party open-source products published from its own GitHub organization:
+**Areas:** Company · Marketplace · Local Services · Home Services · Japan · Scheduling · Calendar · Booking · Field Service Management · Open Source · Artificial Intelligence · Agents
 
-- **[Nittei](https://github.com/meetsmore/nittei)** — self-hosted Rust calendar/scheduler API
-  server (MIT, v0.44.0). Generates its own OpenAPI document at runtime with utoipa and serves it
-  at `/api-docs/openapi.json`; MeetsMore hosts no public instance, so the document cannot be
-  fetched anonymously.
-- **[use-ai](https://github.com/meetsmore/use-ai)** — AG-UI / MCP React framework (BUSL-1.1,
-  v1.17.1), distributed as four npm packages under `@meetsmore-oss/`.
+## MeetsMore on APIs.io
 
-Links:
-- https://meetsmore.com/
-- https://company.meetsmore.com/
-- https://engineering.meetsmore.com/
-- https://github.com/meetsmore
+Everything profiled for MeetsMore is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/meetsmore/](https://apis.io/providers/meetsmore/)** — or go straight to one of the APIs or properties below.
+
+### APIs (2)
+
+- [Nittei Scheduler API](https://apis.io/apis/meetsmore/nittei-scheduler-api/) — Nittei is MeetsMore's self-hosted calendar and scheduler server, written in Rust (Axum + SQLx + PostgreSQL) and published under the MIT licence. It exposes…
+- [use-ai Server](https://apis.io/apis/meetsmore/use-ai-server/) — use-ai is MeetsMore's open-source (BUSL-1.1) React client and Node/Bun server for letting an LLM drive a web application's own frontend. The server…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Meetsmore Nittei Webhooks](https://apis.io/asyncapis/meetsmore/meetsmore-nittei-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [meetsmore-mcp.yml](https://apis.io/servers/meetsmore/meetsmore-mcp-yml/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Meetsmore Authentication](https://apis.io/security/meetsmore/meetsmore-authentication/)
+- [Meetsmore Domain Security](https://apis.io/security/meetsmore/meetsmore-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Meetsmore Plans Pricing](https://apis.io/plans/meetsmore/meetsmore-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Meetsmore Rate Limits](https://apis.io/rate-limits/meetsmore/meetsmore-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://meetsmore.com/)
+- [Pricing](https://pro.meetsmore.com/guide/pricing)
+- [Sign up](https://lp.meetsmore.com/lps/pro)
+- [Support](https://meetsmore-pro.zendesk.com/hc/ja)
+- [Blog](https://engineering.meetsmore.com/)
+- [Terms of service](https://meetsmore.com/policies/terms)
+- [Privacy policy](https://meetsmore.com/policies/privacy)
+- [GitHub](https://github.com/meetsmore)
+
+## API Evangelist rating
+
+**Kin Score 47.9** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 39.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 26.3 |
+| Developer ergonomics | 47.6 |
+| Access clarity | 76.3 |
+
+**Agent readiness 23.0** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 22.7** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/meetsmore/](https://apis.io/providers/meetsmore/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for MeetsMore: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/meetsmore/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
